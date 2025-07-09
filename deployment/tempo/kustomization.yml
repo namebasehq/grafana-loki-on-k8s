@@ -6,3 +6,4 @@ resources:
 - cm.yml
 - service.yml
 - statefulset.yml
+- ingress.yml

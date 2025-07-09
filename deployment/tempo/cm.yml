@@ -12,7 +12,7 @@ data:
       reporting_enabled: false
     compactor:
       compaction:
-        block_retention: 24h
+        block_retention: 720h
         compacted_block_retention: 1h
         compaction_cycle: 120s
         compaction_window: 1h

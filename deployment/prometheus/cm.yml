@@ -128,6 +128,93 @@ data:
     - /etc/config/rules
     - /etc/config/alerts
     scrape_configs:
+    - job_name: 'dnsdist'
+      scrape_interval: 30s
+      metrics_path: '/_metrics'
+      #    basic_auth:
+      #      username: 'your-prometheus-user'
+      #      # SECURITY BEST PRACTICE: Avoid plaintext passwords.
+      #      # Use 'password_file' to read the password from a separate, secure file.
+      #      password: 'FRLV6cWD8pNksnlAY4ZuJijxg'
+      scheme: https
+      tls_config:
+        # ca_file: /etc/prometheus/certs/my_private_ca.crt
+        insecure_skip_verify: true  
+      static_configs:
+        - targets: [
+            'k8s-sharedalb-61928aa796-294058803.ap-southeast-1.elb.amazonaws.com:443', 
+            'k8s-sharedalb-61928aa796-682040402.eu-west-3.elb.amazonaws.com:443', 
+            'k8s-sharedalb-25b6b56d13-636091896.us-west-2.elb.amazonaws.com:443'
+          ]
+    - job_name: 'main-app'
+      scrape_interval: 30s
+      metrics_path: '/api/metrics'
+      basic_auth:
+        username: '2439353388e708c6142cba6811ea96f4b059c1aa66d8f90f833db7602a2fbddc'
+        # SECURITY BEST PRACTICE: Avoid plaintext passwords.
+        # Use 'password_file' to read the password from a separate, secure file.
+        password: '6c842a72c07828582c6e26c1087629b6e2dd1edba7ad5b330cf70f19b866a023'
+      scheme: https
+      tls_config:
+        # ca_file: /etc/prometheus/certs/my_private_ca.crt
+        insecure_skip_verify: false
+      static_configs:
+        - targets: [
+            'www.namebase.io:443', 
+          ]
+    - job_name: 'fullnode'
+      metrics_path: '/metrics'
+      static_configs:
+        - targets:
+            - '172.31.64.49:9090'
+          labels:
+            service: 'hsd'
+            instance: 'delta'
+        - targets:
+            - '172.31.75.106:9090'
+          labels:
+            service: 'hsd'
+            instance: 'epsilon'
+        - targets:
+            - '172.31.7.40:9090'
+          labels:
+            service: 'hsd'
+            instance: 'gamma'
+        - targets:
+            - '172.31.72.165:9090'
+          labels:
+            service: 'hsd'
+            instance: 'zeta'
+        - targets:
+            - '172.31.72.80:9090'
+          labels:
+            service: 'hsd'
+            instance: 'eta'
+        - targets:
+            - '172.31.72.195:9090'
+          labels:
+            service: 'hsd'
+            instance: 'iota'
+        - targets:
+            - '172.31.28.27:9090'
+          labels:
+            service: 'hsd'
+            instance: 'beta'
+        - targets:
+            - '172.31.16.245:9090'
+          labels:
+            service: 'hsd'
+            instance: 'legacy'
+        - targets:
+            - '172.31.0.108:9090'
+          labels:
+            service: 'hsd'
+            instance: 'theta'
+        - targets:
+            - '172.31.14.133:9090'
+          labels:
+            service: 'hsd'
+            instance: 'kappa'
     - job_name: prometheus
       static_configs:
       - targets:

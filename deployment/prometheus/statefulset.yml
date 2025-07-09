@@ -1,6 +1,6 @@
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: prometheus
 spec:
@@ -20,6 +20,7 @@ spec:
       serviceAccountName: prometheus
       automountServiceAccountToken: true
       securityContext:
+        fsGroup: 10001
         runAsGroup: 10001
         runAsUser: 10001
         runAsNonRoot: true
@@ -48,16 +49,22 @@ spec:
             httpGet:
               path: /-/healthy
               port: http
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /-/ready
               port: http
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
           resources:
             limits:
-              cpu: 100m
-              memory: 1Gi
+              cpu: 1000m
+              memory: 2Gi
             requests:
-              cpu: 50m
+              cpu: 200m
               memory: 512Mi
           volumeMounts:
             - name: config-volume
@@ -76,10 +83,11 @@ spec:
             capabilities:
               drop:
                 - ALL
+      terminationGracePeriodSeconds: 60
       volumes:
         - name: config-volume
           configMap:
             name: prometheus
         - name: data-volume
-          emptyDir:
-            sizeLimit: "5Gi"
+          persistentVolumeClaim:
+            claimName: prometheus

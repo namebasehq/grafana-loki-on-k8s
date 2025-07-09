@@ -23,6 +23,7 @@ spec:
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
+        fsGroup: 65534
         runAsGroup: 65534
         runAsUser: 65534
       initContainers:
@@ -103,5 +104,5 @@ spec:
           configMap:
             name: datasources
         - name: grafana-storage
-          emptyDir:
-            sizeLimit: "2Gi"
+          persistentVolumeClaim:
+            claimName: grafana

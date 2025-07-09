@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+  labels:
+    app.kubernetes.io/name: tempo
+  name: tempo
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: tempo.monitoring.namebase.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: tempo
+            port:
+              number: 4318
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - tempo.monitoring.namebase.io
+    secretName: monitoring-tempo-tls-secret
+

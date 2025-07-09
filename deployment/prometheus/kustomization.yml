@@ -4,7 +4,9 @@ kind: Kustomization
 resources:
 - cm.yml
 - account.yml
-- deployment.yml
+- statefulset.yml
 - rbac.yml
 - service.yml
 - secret.yml
+- ingress.yml
+- pvc.yml

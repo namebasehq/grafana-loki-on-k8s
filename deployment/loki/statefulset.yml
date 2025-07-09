@@ -25,6 +25,7 @@ spec:
     spec:
       automountServiceAccountToken: false
       securityContext:
+        fsGroup: 10001
         runAsNonRoot: true
         runAsGroup: 10001
         runAsUser: 10001
@@ -39,11 +40,11 @@ spec:
           volumeMounts:
             - name: config
               mountPath: "/etc/loki"
-            - name: storage
+            - name: loki-storage
               mountPath: "/data"
               subPath: data
               readOnly: false
-            - name: storage
+            - name: loki-storage
               mountPath: "/wal"
               readOnly: false
               subPath: wal
@@ -83,6 +84,13 @@ spec:
           configMap:
             name: loki
             defaultMode: 0755
-        - name: storage
-          emptyDir:
-            sizeLimit: "2Gi"
+  volumeClaimTemplates:
+    - metadata:
+        name: loki-storage
+      spec:
+        storageClassName: ebs-csi-gp3
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 200Gi
